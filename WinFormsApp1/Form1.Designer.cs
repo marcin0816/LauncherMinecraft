@@ -28,188 +28,207 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.languageLabel = new System.Windows.Forms.Label();
-            this.languageComboBox = new System.Windows.Forms.ComboBox();
-            this.usernameLabel = new System.Windows.Forms.Label();
-            this.usernameTextBox = new System.Windows.Forms.TextBox();
-            this.versionLabel = new System.Windows.Forms.Label();
-            this.versionListBox = new System.Windows.Forms.ListBox();
-            this.customJavaPathCheckBox = new System.Windows.Forms.CheckBox();
-            this.javaPathLabel = new System.Windows.Forms.Label();
-            this.javaPathTextBox = new System.Windows.Forms.TextBox();
-            this.memoryGroupBox = new System.Windows.Forms.GroupBox();
-            this.memoryLabel = new System.Windows.Forms.Label();
-            this.memorySlider = new System.Windows.Forms.TrackBar();
-            this.actionButton = new System.Windows.Forms.Button();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.statusLabel = new System.Windows.Forms.Label();
-            this.memoryGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.memorySlider)).BeginInit();
-            this.SuspendLayout();
+            languageLabel = new Label();
+            languageComboBox = new ComboBox();
+            usernameLabel = new Label();
+            usernameTextBox = new TextBox();
+            versionLabel = new Label();
+            versionListBox = new ListBox();
+            customJavaPathCheckBox = new CheckBox();
+            javaPathLabel = new Label();
+            javaPathTextBox = new TextBox();
+            memoryGroupBox = new GroupBox();
+            memoryLabel = new Label();
+            memorySlider = new TrackBar();
+            actionButton = new Button();
+            progressBar = new ProgressBar();
+            statusLabel = new Label();
+            memoryGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)memorySlider).BeginInit();
+            SuspendLayout();
             // 
             // languageLabel
             // 
-            this.languageLabel.AutoSize = true;
-            this.languageLabel.Location = new System.Drawing.Point(551, 20);
-            this.languageLabel.Name = "languageLabel";
-            this.languageLabel.Size = new System.Drawing.Size(87, 13);
-            this.languageLabel.TabIndex = 0;
-            this.languageLabel.Text = "Select language:";
+            languageLabel.AutoSize = true;
+            languageLabel.Location = new Point(643, 23);
+            languageLabel.Margin = new Padding(4, 0, 4, 0);
+            languageLabel.Name = "languageLabel";
+            languageLabel.Size = new Size(93, 15);
+            languageLabel.TabIndex = 0;
+            languageLabel.Text = "Select language:";
             // 
             // languageComboBox
             // 
-            this.languageComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.languageComboBox.FormattingEnabled = true;
-            this.languageComboBox.Location = new System.Drawing.Point(644, 17);
-            this.languageComboBox.Name = "languageComboBox";
-            this.languageComboBox.Size = new System.Drawing.Size(121, 21);
-            this.languageComboBox.TabIndex = 1;
-            this.languageComboBox.SelectedIndexChanged += new System.EventHandler(this.languageComboBox_SelectedIndexChanged);
+            languageComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            languageComboBox.FormattingEnabled = true;
+            languageComboBox.Location = new Point(751, 20);
+            languageComboBox.Margin = new Padding(4, 3, 4, 3);
+            languageComboBox.Name = "languageComboBox";
+            languageComboBox.Size = new Size(140, 23);
+            languageComboBox.TabIndex = 1;
+            languageComboBox.SelectedIndexChanged += languageComboBox_SelectedIndexChanged;
             // 
             // usernameLabel
             // 
-            this.usernameLabel.AutoSize = true;
-            this.usernameLabel.Location = new System.Drawing.Point(109, 57);
-            this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(58, 13);
-            this.usernameLabel.TabIndex = 2;
-            this.usernameLabel.Text = "Username:";
+            usernameLabel.AutoSize = true;
+            usernameLabel.Location = new Point(127, 66);
+            usernameLabel.Margin = new Padding(4, 0, 4, 0);
+            usernameLabel.Name = "usernameLabel";
+            usernameLabel.Size = new Size(63, 15);
+            usernameLabel.TabIndex = 2;
+            usernameLabel.Text = "Username:";
             // 
             // usernameTextBox
             // 
-            this.usernameTextBox.Location = new System.Drawing.Point(173, 54);
-            this.usernameTextBox.Name = "usernameTextBox";
-            this.usernameTextBox.Size = new System.Drawing.Size(192, 20);
-            this.usernameTextBox.TabIndex = 3;
+            usernameTextBox.Location = new Point(202, 62);
+            usernameTextBox.Margin = new Padding(4, 3, 4, 3);
+            usernameTextBox.Name = "usernameTextBox";
+            usernameTextBox.Size = new Size(223, 23);
+            usernameTextBox.TabIndex = 3;
             // 
             // versionLabel
             // 
-            this.versionLabel.AutoSize = true;
-            this.versionLabel.Location = new System.Drawing.Point(471, 129);
-            this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(124, 13);
-            this.versionLabel.TabIndex = 4;
-            this.versionLabel.Text = "Select Minecraft version:";
+            versionLabel.AutoSize = true;
+            versionLabel.Location = new Point(550, 149);
+            versionLabel.Margin = new Padding(4, 0, 4, 0);
+            versionLabel.Name = "versionLabel";
+            versionLabel.Size = new Size(136, 15);
+            versionLabel.TabIndex = 4;
+            versionLabel.Text = "Select Minecraft version:";
             // 
             // versionListBox
             // 
-            this.versionListBox.FormattingEnabled = true;
-            this.versionListBox.Location = new System.Drawing.Point(601, 129);
-            this.versionListBox.Name = "versionListBox";
-            this.versionListBox.Size = new System.Drawing.Size(284, 134);
-            this.versionListBox.TabIndex = 5;
-            this.versionListBox.SelectedIndexChanged += new System.EventHandler(this.versionListBox_SelectedIndexChanged);
+            versionListBox.FormattingEnabled = true;
+            versionListBox.ItemHeight = 15;
+            versionListBox.Location = new Point(701, 149);
+            versionListBox.Margin = new Padding(4, 3, 4, 3);
+            versionListBox.Name = "versionListBox";
+            versionListBox.Size = new Size(331, 154);
+            versionListBox.TabIndex = 5;
+            versionListBox.SelectedIndexChanged += versionListBox_SelectedIndexChanged;
             // 
             // customJavaPathCheckBox
             // 
-            this.customJavaPathCheckBox.AutoSize = true;
-            this.customJavaPathCheckBox.Location = new System.Drawing.Point(572, 277);
-            this.customJavaPathCheckBox.Name = "customJavaPathCheckBox";
-            this.customJavaPathCheckBox.Size = new System.Drawing.Size(129, 17);
-            this.customJavaPathCheckBox.TabIndex = 6;
-            this.customJavaPathCheckBox.Text = "Set custom Java path";
-            this.customJavaPathCheckBox.UseVisualStyleBackColor = true;
-            this.customJavaPathCheckBox.CheckedChanged += new System.EventHandler(this.customJavaPathCheckBox_CheckedChanged);
+            customJavaPathCheckBox.AutoSize = true;
+            customJavaPathCheckBox.Location = new Point(667, 320);
+            customJavaPathCheckBox.Margin = new Padding(4, 3, 4, 3);
+            customJavaPathCheckBox.Name = "customJavaPathCheckBox";
+            customJavaPathCheckBox.Size = new Size(137, 19);
+            customJavaPathCheckBox.TabIndex = 6;
+            customJavaPathCheckBox.Text = "Set custom Java path";
+            customJavaPathCheckBox.UseVisualStyleBackColor = true;
+            customJavaPathCheckBox.CheckedChanged += customJavaPathCheckBox_CheckedChanged;
             // 
             // javaPathLabel
             // 
-            this.javaPathLabel.AutoSize = true;
-            this.javaPathLabel.Location = new System.Drawing.Point(569, 297);
-            this.javaPathLabel.Name = "javaPathLabel";
-            this.javaPathLabel.Size = new System.Drawing.Size(57, 13);
-            this.javaPathLabel.TabIndex = 7;
-            this.javaPathLabel.Text = "Java path:";
+            javaPathLabel.AutoSize = true;
+            javaPathLabel.Location = new Point(664, 343);
+            javaPathLabel.Margin = new Padding(4, 0, 4, 0);
+            javaPathLabel.Name = "javaPathLabel";
+            javaPathLabel.Size = new Size(59, 15);
+            javaPathLabel.TabIndex = 7;
+            javaPathLabel.Text = "Java path:";
             // 
             // javaPathTextBox
             // 
-            this.javaPathTextBox.Enabled = false;
-            this.javaPathTextBox.Location = new System.Drawing.Point(632, 294);
-            this.javaPathTextBox.Name = "javaPathTextBox";
-            this.javaPathTextBox.Size = new System.Drawing.Size(224, 20);
-            this.javaPathTextBox.TabIndex = 8;
+            javaPathTextBox.Enabled = false;
+            javaPathTextBox.Location = new Point(737, 339);
+            javaPathTextBox.Margin = new Padding(4, 3, 4, 3);
+            javaPathTextBox.Name = "javaPathTextBox";
+            javaPathTextBox.Size = new Size(261, 23);
+            javaPathTextBox.TabIndex = 8;
             // 
             // memoryGroupBox
             // 
-            this.memoryGroupBox.Controls.Add(this.memoryLabel);
-            this.memoryGroupBox.Location = new System.Drawing.Point(572, 313);
-            this.memoryGroupBox.Name = "memoryGroupBox";
-            this.memoryGroupBox.Size = new System.Drawing.Size(284, 70);
-            this.memoryGroupBox.TabIndex = 9;
-            this.memoryGroupBox.TabStop = false;
-            this.memoryGroupBox.Text = "Memory allocation:";
+            memoryGroupBox.Controls.Add(memoryLabel);
+            memoryGroupBox.Controls.Add(memorySlider);
+            memoryGroupBox.Location = new Point(667, 368);
+            memoryGroupBox.Margin = new Padding(4, 3, 4, 3);
+            memoryGroupBox.Name = "memoryGroupBox";
+            memoryGroupBox.Padding = new Padding(4, 3, 4, 3);
+            memoryGroupBox.Size = new Size(331, 74);
+            memoryGroupBox.TabIndex = 9;
+            memoryGroupBox.TabStop = false;
+            memoryGroupBox.Text = "Memory allocation:";
+            memoryGroupBox.Enter += memoryGroupBox_Enter;
             // 
             // memoryLabel
             // 
-            this.memoryLabel.AutoSize = true;
-            this.memoryLabel.Location = new System.Drawing.Point(235, 31);
-            this.memoryLabel.Name = "memoryLabel";
-            this.memoryLabel.Size = new System.Drawing.Size(31, 13);
-            this.memoryLabel.TabIndex = 1;
-            this.memoryLabel.Text = "2 GB";
+            memoryLabel.AutoSize = true;
+            memoryLabel.Location = new Point(274, 36);
+            memoryLabel.Margin = new Padding(4, 0, 4, 0);
+            memoryLabel.Name = "memoryLabel";
+            memoryLabel.Size = new Size(31, 15);
+            memoryLabel.TabIndex = 1;
+            memoryLabel.Text = "2 GB";
             // 
             // memorySlider
             // 
-            this.memorySlider.Location = new System.Drawing.Point(588, 340);
-            this.memorySlider.Name = "memorySlider";
-            this.memorySlider.Size = new System.Drawing.Size(223, 45);
-            this.memorySlider.TabIndex = 0;
+            memorySlider.Location = new Point(6, 36);
+            memorySlider.Margin = new Padding(4, 3, 4, 3);
+            memorySlider.Name = "memorySlider";
+            memorySlider.Size = new Size(260, 45);
+            memorySlider.TabIndex = 0;
             // 
             // actionButton
             // 
-            this.actionButton.Enabled = false;
-            this.actionButton.Location = new System.Drawing.Point(266, 394);
-            this.actionButton.Name = "actionButton";
-            this.actionButton.Size = new System.Drawing.Size(284, 30);
-            this.actionButton.TabIndex = 10;
-            this.actionButton.Text = "Download Version";
-            this.actionButton.UseVisualStyleBackColor = true;
-            this.actionButton.Click += new System.EventHandler(this.actionButton_Click);
+            actionButton.Enabled = false;
+            actionButton.Location = new Point(310, 455);
+            actionButton.Margin = new Padding(4, 3, 4, 3);
+            actionButton.Name = "actionButton";
+            actionButton.Size = new Size(331, 35);
+            actionButton.TabIndex = 10;
+            actionButton.Text = "Download Version";
+            actionButton.UseVisualStyleBackColor = true;
+            actionButton.Click += actionButton_Click;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(15, 430);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(823, 23);
-            this.progressBar.TabIndex = 11;
+            progressBar.Location = new Point(18, 496);
+            progressBar.Margin = new Padding(4, 3, 4, 3);
+            progressBar.Name = "progressBar";
+            progressBar.Size = new Size(960, 27);
+            progressBar.TabIndex = 11;
             // 
             // statusLabel
             // 
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(364, 460);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(41, 13);
-            this.statusLabel.TabIndex = 12;
-            this.statusLabel.Text = "Ready.";
+            statusLabel.AutoSize = true;
+            statusLabel.Location = new Point(425, 531);
+            statusLabel.Margin = new Padding(4, 0, 4, 0);
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new Size(42, 15);
+            statusLabel.TabIndex = 12;
+            statusLabel.Text = "Ready.";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(897, 482);
-            this.Controls.Add(this.statusLabel);
-            this.Controls.Add(this.memorySlider);
-            this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.actionButton);
-            this.Controls.Add(this.memoryGroupBox);
-            this.Controls.Add(this.javaPathTextBox);
-            this.Controls.Add(this.javaPathLabel);
-            this.Controls.Add(this.customJavaPathCheckBox);
-            this.Controls.Add(this.versionListBox);
-            this.Controls.Add(this.versionLabel);
-            this.Controls.Add(this.usernameTextBox);
-            this.Controls.Add(this.usernameLabel);
-            this.Controls.Add(this.languageComboBox);
-            this.Controls.Add(this.languageLabel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Name = "Form1";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Minecraft Non-Premium Launcher";
-            this.memoryGroupBox.ResumeLayout(false);
-            this.memoryGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.memorySlider)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1046, 556);
+            Controls.Add(statusLabel);
+            Controls.Add(progressBar);
+            Controls.Add(actionButton);
+            Controls.Add(memoryGroupBox);
+            Controls.Add(javaPathTextBox);
+            Controls.Add(javaPathLabel);
+            Controls.Add(customJavaPathCheckBox);
+            Controls.Add(versionListBox);
+            Controls.Add(versionLabel);
+            Controls.Add(usernameTextBox);
+            Controls.Add(usernameLabel);
+            Controls.Add(languageComboBox);
+            Controls.Add(languageLabel);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Margin = new Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Minecraft Non-Premium Launcher";
+            memoryGroupBox.ResumeLayout(false);
+            memoryGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)memorySlider).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

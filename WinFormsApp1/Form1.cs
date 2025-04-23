@@ -22,30 +22,185 @@ namespace WindowsFormsApp1
         private readonly HttpClient httpClient = new HttpClient();
         private bool isDownloading = false;
 
+        // Przechowywanie konfiguracji jako pole klasy
+        private LauncherConfig config;
+
         public Form1()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
 
-            // Inicjalizuj œcie¿kê launchera
-            LAUNCHER_DIR = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MCLauncher");
+                // Inicjalizuj œcie¿kê launchera
+                LAUNCHER_DIR = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MCLauncher");
 
-            SetupDirectories();
+                SetupDirectories();
+
+                // Przygotuj podstawow¹ konfiguracjê formularza
+                SetupInitialFormState();
+
+                // Wczytaj konfiguracjê
+                config = LauncherConfig.LoadConfig();
+                Console.WriteLine("Konfiguracja wczytana w konstruktorze");
+
+                // Zastosuj konfiguracjê do kontrolek
+                ApplyConfigToControls();
+
+                // £aduj dostêpne wersje
+                LoadVersionsAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"B³¹d podczas inicjalizacji launchera: {ex.Message}\n\n{ex.StackTrace}",
+                    "B³¹d inicjalizacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetupInitialFormState()
+        {
+            // Skonfiguruj suwak pamiêci (przed wczytaniem konfiguracji)
+            memorySlider.Minimum = 1;
+            memorySlider.Maximum = 8;
+            memorySlider.Value = 2;
+            memorySlider.TickFrequency = 1;
+            memoryLabel.Text = $"{memorySlider.Value} GB";
 
             // Dodaj opcje jêzyka
             languageComboBox.Items.Add("English");
             languageComboBox.Items.Add("Polski");
             languageComboBox.SelectedIndex = 0;
 
-            // Konfiguruj suwak pamiêci
-            memorySlider.Minimum = 1;
-            memorySlider.Maximum = 8;
-            memorySlider.Value = 2;
-            memorySlider.TickFrequency = 1;
-            memorySlider.ValueChanged += (s, e) => { memoryLabel.Text = $"{memorySlider.Value} GB"; };
-            memoryLabel.Text = $"{memorySlider.Value} GB";
+            // Pod³¹cz zdarzenia (po wczytaniu konfiguracji zostan¹ wywo³ane)
+            usernameTextBox.TextChanged += usernameTextBox_TextChanged;
+            memorySlider.ValueChanged += memorySlider_ValueChanged;
+            customJavaPathCheckBox.CheckedChanged += customJavaPathCheckBox_CheckedChanged;
+        }
 
-            // £aduj dostêpne wersje
-            LoadVersionsAsync();
+        private void ApplyConfigToControls()
+        {
+            try
+            {
+                Console.WriteLine("Rozpoczêcie aplikowania konfiguracji do kontrolek");
+
+                // Ustaw nazwê u¿ytkownika
+                if (!string.IsNullOrEmpty(config.Username))
+                {
+                    // Od³¹cz zdarzenia tymczasowo
+                    usernameTextBox.TextChanged -= usernameTextBox_TextChanged;
+                    usernameTextBox.Text = config.Username;
+                    usernameTextBox.TextChanged += usernameTextBox_TextChanged;
+                    Console.WriteLine($"Ustawiono nazwê u¿ytkownika: {config.Username}");
+                }
+
+                // Ustaw jêzyk
+                if (config.SelectedLanguage >= 0 && config.SelectedLanguage < languageComboBox.Items.Count)
+                {
+                    languageComboBox.SelectedIndex = config.SelectedLanguage;
+                    Console.WriteLine($"Ustawiono jêzyk: {config.SelectedLanguage}");
+                }
+
+                // Ustaw przydzia³ pamiêci
+                if (config.MemoryAllocation >= memorySlider.Minimum && config.MemoryAllocation <= memorySlider.Maximum)
+                {
+                    // Od³¹cz zdarzenie tymczasowo
+                    memorySlider.ValueChanged -= memorySlider_ValueChanged;
+                    memorySlider.Value = config.MemoryAllocation;
+                    memoryLabel.Text = $"{memorySlider.Value} GB";
+                    memorySlider.ValueChanged += memorySlider_ValueChanged;
+                    Console.WriteLine($"Ustawiono przydzia³ pamiêci: {config.MemoryAllocation} GB");
+                }
+
+                // Ustaw œcie¿kê Java
+                if (!string.IsNullOrEmpty(config.JavaPath))
+                {
+                    customJavaPathCheckBox.CheckedChanged -= customJavaPathCheckBox_CheckedChanged;
+                    customJavaPathCheckBox.Checked = config.UseCustomJavaPath;
+                    javaPathTextBox.Text = config.JavaPath;
+                    javaPathTextBox.Enabled = config.UseCustomJavaPath;
+                    customJavaPathCheckBox.CheckedChanged += customJavaPathCheckBox_CheckedChanged;
+                    Console.WriteLine($"Ustawiono œcie¿kê Java: {config.JavaPath} (w³asna: {config.UseCustomJavaPath})");
+                }
+                else
+                {
+                    // Jeœli brak œcie¿ki w konfiguracji, spróbuj j¹ znaleŸæ
+                    string foundPath = FindJavaPath();
+                    if (!string.IsNullOrEmpty(foundPath))
+                    {
+                        javaPathTextBox.Text = foundPath;
+                        Console.WriteLine($"Znaleziono œcie¿kê Java: {foundPath}");
+                    }
+                    else
+                    {
+                        javaPathTextBox.Text = "java";
+                        Console.WriteLine("Nie znaleziono œcie¿ki Java, ustawiono domyœln¹ 'java'");
+                    }
+                }
+
+                // Aktualizuj UI zgodnie z wybranym jêzykiem
+                UpdateUILanguage();
+
+                Console.WriteLine("Zakoñczono aplikowanie konfiguracji do kontrolek");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"B³¹d podczas aplikowania konfiguracji: {ex.Message}");
+            }
+        }
+
+        private void UpdateUILanguage()
+        {
+            switch (languageComboBox.SelectedIndex)
+            {
+                case 0: // English
+                    this.Text = "Minecraft Non-Premium Launcher";
+                    languageLabel.Text = "Select language:";
+                    usernameLabel.Text = "Username:";
+                    versionLabel.Text = "Select Minecraft version:";
+                    customJavaPathCheckBox.Text = "Set custom Java path";
+                    javaPathLabel.Text = "Java path:";
+                    memoryGroupBox.Text = "Memory allocation:";
+                    statusLabel.Text = "Ready.";
+                    break;
+
+                case 1: // Polish
+                    this.Text = "Minecraft Launcher - Nieoficjalny";
+                    languageLabel.Text = "Wybierz jêzyk:";
+                    usernameLabel.Text = "Nazwa u¿ytkownika:";
+                    versionLabel.Text = "Wybierz wersjê Minecrafta:";
+                    customJavaPathCheckBox.Text = "U¿yj w³asnej œcie¿ki do Java";
+                    javaPathLabel.Text = "Œcie¿ka do Java:";
+                    memoryGroupBox.Text = "Przydzia³ pamiêci RAM:";
+                    statusLabel.Text = "Gotowy.";
+                    break;
+            }
+        }
+
+        // Metoda zapisuj¹ca konfiguracjê ze wszystkimi aktualnymi ustawieniami
+        private void SaveCurrentConfig()
+        {
+            try
+            {
+                // SprawdŸ czy config jest null i zainicjalizuj go jeœli potrzeba
+                if (config == null)
+                {
+                    config = new LauncherConfig();
+                    Console.WriteLine("Utworzono nowy obiekt konfiguracji, poniewa¿ poprzedni by³ null");
+                }
+
+                // Zapisz wszystkie wartoœci z kontrolek
+                config.Username = usernameTextBox.Text;
+                config.JavaPath = javaPathTextBox.Text;
+                config.UseCustomJavaPath = customJavaPathCheckBox.Checked;
+                config.MemoryAllocation = memorySlider.Value;
+                config.SelectedLanguage = languageComboBox.SelectedIndex;
+                config.LastSelectedVersion = versionListBox.SelectedItem?.ToString() ?? "";
+
+                // Reszta metody pozostaje bez zmian...
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"B³¹d podczas zapisywania konfiguracji: {ex.Message}");
+            }
         }
 
         private void SetupDirectories()
@@ -84,6 +239,19 @@ namespace WindowsFormsApp1
                     }
                 }
 
+                // Wybierz zapisan¹ wersjê po za³adowaniu listy
+                if (!string.IsNullOrEmpty(config.LastSelectedVersion))
+                {
+                    for (int i = 0; i < versionListBox.Items.Count; i++)
+                    {
+                        if (versionListBox.Items[i].ToString() == config.LastSelectedVersion)
+                        {
+                            versionListBox.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+
                 statusLabel.Text = "Versions loaded successfully";
                 progressBar.Value = 100;
             }
@@ -98,6 +266,7 @@ namespace WindowsFormsApp1
         private void versionListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateActionButton();
+            SaveCurrentConfig();
         }
 
         private void UpdateActionButton()
@@ -608,11 +777,16 @@ namespace WindowsFormsApp1
 
                 // Set up process closed event
                 process.EnableRaisingEvents = true;
-                process.Exited += (sender, e) => {
-                    consoleForm.Invoke(new Action(() => {
+                process.Exited += (sender, e) =>
+                {
+                    consoleForm.Invoke(new Action(() =>
+                    {
                         consoleForm.AppendText("\nGame process has exited.\n");
                     }));
                 };
+
+                // Zapisz konfiguracjê po pomyœlnym uruchomieniu gry
+                SaveCurrentConfig();
             }
             catch (Exception ex)
             {
@@ -663,6 +837,13 @@ namespace WindowsFormsApp1
 
         private string FindJavaPath()
         {
+            // SprawdŸ najpierw zapisan¹ œcie¿kê Java z konfiguracji
+            if (!string.IsNullOrEmpty(config?.JavaPath) && File.Exists(config.JavaPath))
+            {
+                Console.WriteLine($"U¿ywam zapisanej œcie¿ki Java: {config.JavaPath}");
+                return config.JavaPath;
+            }
+
             // Check common Java paths
             string[] commonPaths = {
                 "java",
@@ -677,22 +858,36 @@ namespace WindowsFormsApp1
             {
                 try
                 {
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        FileName = path,
-                        Arguments = "-version",
-                        UseShellExecute = false,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    };
+                    if (path == "java") continue; // Pomijamy domyœln¹ œcie¿kê, chcemy pe³n¹ œcie¿kê
 
-                    using (Process process = Process.Start(startInfo))
+                    if (File.Exists(path))
                     {
-                        string output = process.StandardError.ReadToEnd();
-                        process.WaitForExit();
-                        if (output.Contains("version"))
+                        ProcessStartInfo startInfo = new ProcessStartInfo
                         {
-                            return path;
+                            FileName = path,
+                            Arguments = "-version",
+                            UseShellExecute = false,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        };
+
+                        using (Process process = Process.Start(startInfo))
+                        {
+                            string output = process.StandardError.ReadToEnd();
+                            process.WaitForExit();
+                            if (output.Contains("version"))
+                            {
+                                Console.WriteLine($"Znaleziono œcie¿kê Java: {path}");
+
+                                // Automatycznie zapisz znalezion¹ œcie¿kê w konfiguracji
+                                if (config != null)
+                                {
+                                    config.JavaPath = path;
+                                    LauncherConfig.SaveConfig(config);
+                                }
+
+                                return path;
+                            }
                         }
                     }
                 }
@@ -715,7 +910,27 @@ namespace WindowsFormsApp1
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    return openFileDialog.FileName;
+                    try
+                    {
+                        // Zapisz wybran¹ œcie¿kê Java w kontrolce
+                        javaPathTextBox.Text = openFileDialog.FileName;
+                        customJavaPathCheckBox.Checked = true;
+                        javaPathTextBox.Enabled = true;
+
+                        // Zapisz konfiguracjê natychmiast - WA¯NE
+                        config.JavaPath = openFileDialog.FileName;
+                        config.UseCustomJavaPath = true;
+
+                        bool success = LauncherConfig.SaveConfig(config);
+                        Console.WriteLine($"Wybrano now¹ œcie¿kê Java: {openFileDialog.FileName}, zapisano: {success}");
+
+                        return openFileDialog.FileName;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"B³¹d podczas zapisu œcie¿ki Java: {ex.Message}");
+                        MessageBox.Show($"Nie uda³o siê zapisaæ œcie¿ki Java: {ex.Message}", "B³¹d", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
 
@@ -729,35 +944,35 @@ namespace WindowsFormsApp1
             {
                 javaPathTextBox.Text = FindJavaPath() ?? "java";
             }
+
+            // Zapisz konfiguracjê
+            SaveCurrentConfig();
         }
 
         private void languageComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Update UI language
-            switch (languageComboBox.SelectedIndex)
-            {
-                case 0: // English
-                    this.Text = "Minecraft Non-Premium Launcher";
-                    languageLabel.Text = "Select language:";
-                    usernameLabel.Text = "Username:";
-                    versionLabel.Text = "Select Minecraft version:";
-                    customJavaPathCheckBox.Text = "Set custom Java path";
-                    javaPathLabel.Text = "Java path:";
-                    memoryGroupBox.Text = "Memory allocation:";
-                    break;
-
-                case 1: // Polish
-                    this.Text = "Minecraft Launcher - Nieoficjalny";
-                    languageLabel.Text = "Wybierz jêzyk:";
-                    usernameLabel.Text = "Nazwa u¿ytkownika:";
-                    versionLabel.Text = "Wybierz wersjê Minecrafta:";
-                    customJavaPathCheckBox.Text = "U¿yj w³asnej œcie¿ki do Java";
-                    javaPathLabel.Text = "Œcie¿ka do Java:";
-                    memoryGroupBox.Text = "Przydzia³ pamiêci RAM:";
-                    break;
-            }
-
+            UpdateUILanguage();
             UpdateActionButton();
+
+            // Zapisz konfiguracjê
+            SaveCurrentConfig();
+        }
+
+        private void memorySlider_ValueChanged(object sender, EventArgs e)
+        {
+            memoryLabel.Text = $"{memorySlider.Value} GB";
+            SaveCurrentConfig();
+        }
+
+        private void usernameTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SaveCurrentConfig();
+        }
+
+        private void memoryGroupBox_Enter(object sender, EventArgs e)
+        {
+            // Pusta metoda, ale potrzebna z uwagi na powi¹zanie w designerze
         }
     }
 
